@@ -23,10 +23,6 @@ class PlaySoundsViewController: UIViewController {
         audioFile = AVAudioFile(forReading: receivedAudio.filePathUrl, error: nil)
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-    
     /* UI Methods */
     @IBAction func playAudioChipmunkly(sender: AnyObject) {
        playAudioWithVariablePitch(1000)
@@ -44,6 +40,13 @@ class PlaySoundsViewController: UIViewController {
     }
     
     @IBAction func stopPlaying(sender: AnyObject) {
+        stopPlayback()
+    }
+    
+    /* Methods that actually control playback */
+    
+    /* stops both avplayer and audio engine */
+    func stopPlayback(){
         if (isPlaying) {
             avPlayer.stop()
             audioEngine.stop()
@@ -52,15 +55,8 @@ class PlaySoundsViewController: UIViewController {
         }
     }
     
-    /* Methods that actually control playback */
-    
     func playAudioWithVariablePitch(pitch:Float) {
-        if (isPlaying) {
-            avPlayer.stop()
-            isPlaying = false
-        }
-        audioEngine.stop()
-        audioEngine.reset()
+        stopPlayback()
         
         var audioPlayerNode = AVAudioPlayerNode()
         audioEngine.attachNode(audioPlayerNode)
@@ -80,6 +76,7 @@ class PlaySoundsViewController: UIViewController {
     }
     
     func playAudioUsingAVPlayer(rate:Float) {
+        stopPlayback()
         
         var error: NSError?
         self.avPlayer = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: &error)
